@@ -1,4 +1,4 @@
-package com.guarino.gatherlyapi.domain.model;
+package com.guarino.gatherlyapi.domain.model.user;
 
 public enum UserRole {
     USER,
