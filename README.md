@@ -131,49 +131,44 @@ mvn test
 
 ## 📂 Estrutura do Projeto
 
-A estrutura do projeto segue a **Arquitetura Hexagonal**, com os principais diretórios em `src/main/java`:
+A estrutura de pacotes do projeto é um dos seus pilares. Ela combina a **Arquitetura Hexagonal** com a organização por **Contextos Delimitados (Bounded Contexts)**, uma prática avançada do Domain-Driven Design (DDD).
 
-- `domain`: Entidades e regras de negócio puras.
-- `application`: Casos de uso e interfaces (portas) de entrada e saída.
-- `infrastructure`: Adaptadores externos (controllers, repositórios, serviços AWS, etc).
+Isso significa que o código é agrupado por **funcionalidade de negócio** (`identity`, `events`) e não por tipo técnico (`services`, `repositories`). Cada contexto é um módulo autocontido com suas próprias camadas de domínio, aplicação e infraestrutura.
+
+- **`identity/`**: Contexto responsável pela identidade do usuário, autenticação, autorização e gerenciamento de perfis.
+- **`events/`**: Contexto futuro, responsável pela criação, busca e participação em eventos.
+- **`shared/`**: Módulo que contém código de infraestrutura compartilhado e agnóstico de negócio, como configurações, AOP, e o handler de exceções global.
+
+A estrutura de alto nível se parece com isso:
 
 ```text
-com.guarino
-└── gatherly
-    ├── domain
-    │   ├── model
-    │   │   // Ex: User.java, Event.java
-    │   └── exception
-    │       // Ex: UserNotFoundException.java
-    ├── application
-    │   ├── port
-    │   │   ├── in  // Interfaces dos Casos de Uso
-    │   │   │   // Ex: RegisterUserUseCase.java
-    │   │   └── out // Interfaces para a Infraestrutura
-    │   │       // Ex: UserRepositoryPort.java
-    │   └── service // Implementações dos Casos de Uso
-    │       // Ex: RegisterUserService.java
-    └── infrastructure
-        ├── config
-        │   // Ex: SecurityConfig.java, BeanConfig.java
-        ├── web
-        │   ├── controller
-        │   │   // Ex: AuthController.java
-        │   ├── dto
-        │   │   ├── request
-        │   │   │   // Ex: RegisterUserRequest.java
-        │   │   └── response
-        │   │       // Ex: UserResponse.java
-        │   └── mapper
-        │       // Ex: UserMapper.java
-        └── persistence
-            ├── entity
-            │   // Ex: UserEntity.java
-            ├── repository
-            │   // A interface do Spring Data JPA: UserJpaRepository.java
-            └── adapter
-                // Implementação da porta: UserRepositoryAdapter.java
+com.guarino.gatherlyapi
+├── identity/                  <-- CONTEXTO: Identidade e Acesso
+│   ├── application/
+│   │   ├── port/
+│   │   │   ├── in/             (RegisterUserUseCase.java)
+│   │   │   └── out/            (UserRepositoryPort.java)
+│   │   └── service/            (RegisterUserService.java)
+│   ├── domain/
+│   │   ├── exception/          (EmailAlreadyExistsException.java)
+│   │   └── model/              (User.java)
+│   └── infrastructure/
+│       ├── persistence/        (UserPersistenceAdapter.java)
+│       └── web/                (AuthController.java)
+│
+├── events/                    <-- CONTEXTO: Eventos (vazio por enquanto)
+│   ├── application/
+│   ├── domain/
+│   └── infrastructure/
+│
+└── shared/                    <-- INFRAESTRUTURA COMPARTILHADA
+    └── infrastructure/
+        ├── aop/                (InputNormalizationAspect.java)
+        ├── config/             (SecurityConfig.java, etc.)
+        ├── exception/          (GlobalExceptionHandler.java)
+        └── security/           (PasswordHasherAdapter.java)
 ```
+Essa abordagem garante alta coesão, baixo acoplamento entre funcionalidades e prepara o projeto para escalar de forma sustentável.
 
 ## 📖 Documentação da API
 
