@@ -1,19 +1,18 @@
-# Visão da Arquitetura & Decisões Iniciais
+# Visão da Arquitetura
 
-**Versão**: 01.00.00  
-**Data**: 15 de julho de 2025
+**Versão**: 02.00.00  
+**Data**: 25 de julho de 2025
 
 ## Introdução
 
 Este documento delineia a visão arquitetural inicial para o projeto **Gatherly**. Ele deve ser usado como referência pela equipe de desenvolvimento (neste caso, a desenvolvedora do projeto) para a construção do software, garantindo que o desenvolvimento seja consistente, de alta qualidade e alinhado aos objetivos de longo prazo do produto. Ele é um documento vivo e será atualizado conforme novas decisões forem tomadas através de Registros de Decisão de Arquitetura (ADRs).
 
 ## Padrão Arquitetural Escolhido
+Para o Gatherly, adotaremos uma combinação de padrões para atingir nossos objetivos de robustez, testabilidade e escalabilidade:
 
-Para o Gatherly, adotaremos a **Arquitetura Hexagonal** (Ports and Adapters).
-
-Esta escolha se justifica pela necessidade de um sistema robusto, testável e de fácil manutenção. A Arquitetura Hexagonal nos permite isolar completamente o núcleo da nossa aplicação (domínio e regras de negócio) de detalhes externos como o framework web, o banco de dados ou serviços de terceiros.
-
-Isso significa que o coração da nossa lógica de negócio não terá conhecimento de que está usando Spring Boot, PostgreSQL ou Amazon S3. Ele apenas se comunica através de "portas" (interfaces Java), e os "adaptadores" (implementações concretas) fazem a ponte com o mundo exterior. Esta separação é crucial para a testabilidade do núcleo da aplicação e para a flexibilidade de evoluir ou trocar tecnologias no futuro com impacto mínimo.
+1. **Arquitetura Hexagonal (Ports and Adapters):** Para isolar o núcleo da aplicação (domínio e regras de negócio) de detalhes externos (framework web, banco de dados, etc.).
+2. **Domain-Driven Design (DDD):** Para guiar a modelagem do nosso núcleo de negócio, focando em um Modelo de Domínio Rico e na Linguagem Ubíqua.
+3. **Organização por Contextos Delimitados (Package by Feature):** Para estruturar o código-fonte em módulos de negócio coesos e com baixo acoplamento, promovendo a escalabilidade.
 
 ## Princípios de Arquitetura
 
@@ -91,6 +90,28 @@ graph TD
         1. **Monolito em Camadas Tradicional:** Rejeitado pois, apesar da simplicidade inicial, o acoplamento gerado entre as camadas de negócio e persistência dificultaria os testes unitários do núcleo da aplicação e a evolução futura do sistema.
     9. **Referências**:
         1. Cockburn, Alistair. *Hexagonal architecture*. https://alistair.cockburn.us/hexagonal-architecture/
+
+- **ADR-002:** Adoção de Organização de Pacotes por Contexto Delimitado
+    1. **Status**: Aceita
+    2. **Data**: 2025-07-25
+    3. **Contexto**: O projeto Gatherly está no início de seu desenvolvimento, com a primeira funcionalidade (registro de usuário) implementada. Prevemos a adição de múltiplos domínios de negócio distintos, como Gestão de Eventos, Notificações e Engajamento Social. A estrutura inicial de pacotes, organizada por camada técnica (ex: `application/user`, `domain/user`), já demonstra sinais de que se tornará difícil de manter, pois a lógica de uma única funcionalidade fica espalhada por todo o projeto. Precisamos de uma estrutura que promova alta coesão e baixo acoplamento entre as funcionalidades, facilitando a escalabilidade.
+    4. **Opções consideradas**:
+       1. **Manter Organização por Camada Técnica:** Continuar agrupando classes por seu tipo técnico (ex: `controllers/`, `services/`, `repositories/`). É um padrão simples e conhecido, mas leva a um baixo nível de coesão funcional, dificultando a localização e modificação de funcionalidades sem impactar outras.
+       2. **Adotar Organização por Funcionalidade/Contexto (Package by Feature):** Estruturar o código em pacotes de nível superior que representam um Contexto Delimitado de negócio (ex: `identity`, `events`). Dentro de cada pacote de contexto, a estrutura da Arquitetura Hexagonal (`application`, `domain`, `infrastructure`) é mantida.
+    5. **Decisão**: Optamos por refatorar o projeto e adotar estritamente a **Organização por Contexto Delimitado (Package by Feature)**. Também foi criado um módulo `shared` para abrigar componentes de infraestrutura reutilizáveis e agnósticos de negócio.
+    6. **Justificativa**: Esta abordagem foi escolhida por três motivos principais:
+       1. **Alinhamento com DDD e Arquitetura Hexagonal**: A estrutura reflete diretamente os Contextos Delimitados do negócio, tornando o código um espelho do domínio.
+       2. **Alta Coesão e Baixo Acoplamento**: Todo o código relevante para uma funcionalidade (ex: identidade e acesso) reside em um único local, facilitando a manutenção e reduzindo o risco de alterações em uma área quebrarem outra.
+       3. **Escalabilidade e Modularidade**: Esta estrutura é a base para um "Monolito Modular". Ela torna trivial a tarefa de adicionar novas funcionalidades de forma isolada e é um pré-requisito para uma eventual e futura extração de um contexto para um microserviço, se necessário.
+    7. **Implicações**:
+       - A base de código foi refatorada para os pacotes `identity` e `shared`.
+       - O desenvolvimento de novas funcionalidades, como a de `events`, deverá seguir esta mesma estrutura, criando seu próprio pacote de contexto.
+       - A comunicação entre contextos deve ser feita exclusivamente através de suas portas de entrada públicas (Casos de Uso), nunca acessando repositórios ou modelos de outros contextos diretamente.
+    8. **Alternativas rejeitadas**:
+       - A **Organização por Camada Técnica** foi rejeitada por não ser escalável. Em um projeto com a ambição de crescer, ela inevitavelmente levaria a um "Big Ball of Mud" (Grande Bola de Lama), onde tudo depende de tudo.
+    9. **Referências**:
+       - FOWLER, Martin. BoundedContext. [**martinfowler.com**](http://martinfowler.com/), 2014. Disponível em: https://martinfowler.com/bliki/BoundedContext.html
+       - COCKBURN, Alistair. Hexagonal architecture. [**alistair.cockburn.us**](http://alistair.cockburn.us/), 2005. Disponível em: https://alistair.cockburn.us/hexagonal-architecture/
 
 ## Referências
 
