@@ -1,4 +1,4 @@
-package com.guarino.gatherlyapi.infrastructure.web.validation.password;
+package com.guarino.gatherlyapi.infrastructure.web.validation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

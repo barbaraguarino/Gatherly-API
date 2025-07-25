@@ -1,7 +1,7 @@
 package com.guarino.gatherlyapi.infrastructure.aop;
 
 import com.guarino.gatherlyapi.infrastructure.web.validation.NormalizeEmail;
-import com.guarino.gatherlyapi.infrastructure.web.validation.password.TrimString;
+import com.guarino.gatherlyapi.infrastructure.web.validation.TrimString;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;

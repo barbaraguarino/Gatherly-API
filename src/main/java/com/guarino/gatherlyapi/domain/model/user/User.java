@@ -14,14 +14,7 @@ public class User {
     private final ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;
 
-    public User(UUID id, String email, UserRole role, ZonedDateTime createdAt) {
-        this.id = id;
-        this.email = email;
-        this.role = role;
-        this.createdAt = createdAt;
-    }
-
-    public User(UUID id, String name, String email, String passwordHash, UserRole role, UserStatus status, ZonedDateTime createdAt, ZonedDateTime updatedAt) {
+    private User(UUID id, String name, String email, String passwordHash, UserRole role, UserStatus status, ZonedDateTime createdAt, ZonedDateTime updatedAt) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -30,6 +23,24 @@ public class User {
         this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public static User create(String name, String email, String passwordHash) {
+        var now = ZonedDateTime.now();
+        return new User(
+                UUID.randomUUID(),
+                name,
+                email,
+                passwordHash,
+                UserRole.USER,
+                UserStatus.PENDING_VERIFICATION,
+                now,
+                now
+        );
+    }
+
+    public static User reconstitute(UUID id, String name, String email, String passwordHash, UserRole role, UserStatus status, ZonedDateTime createdAt, ZonedDateTime updatedAt) {
+        return new User(id, name, email, passwordHash, role, status, createdAt, updatedAt);
     }
 
     public void updateProfile(String newName) {

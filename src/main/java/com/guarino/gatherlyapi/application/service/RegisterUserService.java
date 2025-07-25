@@ -6,45 +6,29 @@ import com.guarino.gatherlyapi.application.port.out.PasswordHasherPort;
 import com.guarino.gatherlyapi.application.port.out.UserRepositoryPort;
 import com.guarino.gatherlyapi.domain.exception.EmailAlreadyExistsException;
 import com.guarino.gatherlyapi.domain.model.user.User;
-import com.guarino.gatherlyapi.domain.model.user.UserRole;
-import com.guarino.gatherlyapi.domain.model.user.UserStatus;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.ZonedDateTime;
-import java.util.UUID;
-
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class RegisterUserService implements RegisterUserUseCase {
 
     private final UserRepositoryPort userRepositoryPort;
     private final PasswordHasherPort passwordHasherPort;
-
-    public RegisterUserService(UserRepositoryPort userRepositoryPort, PasswordHasherPort passwordHasherPort) {
-        this.userRepositoryPort = userRepositoryPort;
-        this.passwordHasherPort = passwordHasherPort;
-    }
 
     @Override
     public User execute(RegisterUserCommand command) {
         if (userRepositoryPort.existsByEmail(command.email())) {
             throw new EmailAlreadyExistsException(command.email());
         }
-
         String hashedPassword = passwordHasherPort.encode(command.password());
-
-        User newUser = new User(
-                UUID.randomUUID(),
+        User newUser = User.create(
                 command.name(),
                 command.email(),
-                hashedPassword,
-                UserRole.USER,
-                UserStatus.PENDING_VERIFICATION,
-                ZonedDateTime.now(),
-                ZonedDateTime.now()
+                hashedPassword
         );
-
         return userRepositoryPort.save(newUser);
     }
 }

@@ -5,22 +5,20 @@ import com.guarino.gatherlyapi.domain.model.user.User;
 import com.guarino.gatherlyapi.infrastructure.translator.EnumTranslator;
 import com.guarino.gatherlyapi.infrastructure.web.dto.request.RegisterUserRequestDTO;
 import com.guarino.gatherlyapi.infrastructure.web.dto.response.UserSimpleResponseDTO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class UserWebMapper {
 
     private final EnumTranslator enumTranslator;
 
-    public UserWebMapper(EnumTranslator enumTranslator) {
-        this.enumTranslator = enumTranslator;
-    }
-
     public RegisterUserCommand toCommand(RegisterUserRequestDTO dto) {
         return new RegisterUserCommand(
-                dto.getName(),
-                dto.getEmail(),
-                dto.getPassword()
+                dto.name(),
+                dto.email(),
+                dto.password()
         );
     }
 
