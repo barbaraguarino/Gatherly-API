@@ -1,4 +1,4 @@
-package com.guarino.gatherlyapi.infrastructure.web.dto.response;
+package com.guarino.gatherlyapi.infrastructure.web.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

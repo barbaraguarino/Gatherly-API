@@ -1,10 +1,10 @@
-package com.guarino.gatherlyapi.infrastructure.web.mapper;
+package com.guarino.gatherlyapi.infrastructure.web.auth.mapper;
 
 import com.guarino.gatherlyapi.application.user.port.in.RegisterUserCommand;
 import com.guarino.gatherlyapi.domain.user.model.User;
 import com.guarino.gatherlyapi.infrastructure.translator.EnumTranslator;
-import com.guarino.gatherlyapi.infrastructure.web.dto.request.RegisterUserRequestDTO;
-import com.guarino.gatherlyapi.infrastructure.web.dto.response.UserSimpleResponseDTO;
+import com.guarino.gatherlyapi.infrastructure.web.auth.dto.request.RegisterUserRequestDTO;
+import com.guarino.gatherlyapi.infrastructure.web.auth.dto.response.RegisterResponseDTO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class UserApiMapper {
+public class AuthApiMapper {
 
     private final EnumTranslator enumTranslator;
 
@@ -24,8 +24,8 @@ public class UserApiMapper {
         );
     }
 
-    public UserSimpleResponseDTO toSimpleResponse(User user) {
-        return new UserSimpleResponseDTO(
+    public RegisterResponseDTO toSimpleResponse(User user) {
+        return new RegisterResponseDTO(
                 user.getId(),
                 user.getName(),
                 user.getEmail(),

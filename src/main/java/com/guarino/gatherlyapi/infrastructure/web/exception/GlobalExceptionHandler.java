@@ -1,7 +1,7 @@
 package com.guarino.gatherlyapi.infrastructure.web.exception;
 
 import com.guarino.gatherlyapi.domain.user.exception.EmailAlreadyExistsException;
-import com.guarino.gatherlyapi.infrastructure.web.dto.response.ErrorResponseDTO;
+import com.guarino.gatherlyapi.infrastructure.web.dto.ErrorResponseDTO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public ResponseEntity<ErrorResponseDTO> handleEmailAlreadyExists(final EmailAlreadyExistsException ex, final WebRequest request) {
         String message = resolveMessage("error.email.exists", new Object[]{ex.getEmail()}, request);
-        return buildErrorResponse(HttpStatus.CONFLICT, message, null, request);
+        return buildErrorResponse(HttpStatus.CONFLICT, message, null, getPath(request));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -45,18 +45,22 @@ public class GlobalExceptionHandler {
                 ));
 
         String message = resolveMessage("error.validation", null, request);
-        return buildErrorResponse(HttpStatus.BAD_REQUEST, message, validationErrors, request);
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, message, validationErrors, getPath(request));
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDTO> handleGlobalException(final Exception ex, final WebRequest request) {
         log.error("Unhandled exception caught: {}", ex.getMessage(), ex);
         String message = resolveMessage("error.unexpected", null, request);
-        return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, message, null, request);
+        return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, message, null, getPath(request));
     }
 
-    private ResponseEntity<ErrorResponseDTO> buildErrorResponse(final HttpStatus status, final String message, final Map<String, String> details, final WebRequest request) {
-        String path = ((ServletWebRequest) request).getRequest().getRequestURI();
+    private ResponseEntity<ErrorResponseDTO> buildErrorResponse(
+            final HttpStatus status,
+            final String message,
+            final Map<String,
+            String> details,
+            final String path) {
         ErrorResponseDTO errorDto = new ErrorResponseDTO(
                 ZonedDateTime.now(),
                 status.value(),
@@ -70,5 +74,9 @@ public class GlobalExceptionHandler {
 
     private String resolveMessage(final String key, final Object[] args, final WebRequest request) {
         return messageSource.getMessage(key, args, request.getLocale());
+    }
+
+    private String getPath(WebRequest request) {
+        return ((ServletWebRequest) request).getRequest().getRequestURI();
     }
 }

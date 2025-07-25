@@ -1,8 +1,8 @@
-package com.guarino.gatherlyapi.infrastructure.web.dto.response;
+package com.guarino.gatherlyapi.infrastructure.web.auth.dto.response;
 
 import java.util.UUID;
 
-public record UserSimpleResponseDTO(
+public record RegisterResponseDTO(
         UUID id,
         String name,
         String email,

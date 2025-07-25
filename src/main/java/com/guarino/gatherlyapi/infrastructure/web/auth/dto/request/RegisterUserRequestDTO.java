@@ -1,4 +1,4 @@
-package com.guarino.gatherlyapi.infrastructure.web.dto.request;
+package com.guarino.gatherlyapi.infrastructure.web.auth.dto.request;
 
 import com.guarino.gatherlyapi.infrastructure.web.validation.NormalizeEmail;
 import com.guarino.gatherlyapi.infrastructure.web.validation.TrimString;
