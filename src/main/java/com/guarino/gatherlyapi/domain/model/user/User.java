@@ -70,4 +70,35 @@ public class User {
         this.updatedAt = ZonedDateTime.now();
     }
 
+    public UUID getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public UserRole getRole() {
+        return role;
+    }
+
+    public UserStatus getStatus() {
+        return status;
+    }
+
+    public ZonedDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public ZonedDateTime getUpdatedAt() {
+        return updatedAt;
+    }
 }
