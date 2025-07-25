@@ -2,12 +2,15 @@ package com.guarino.gatherlyapi.infrastructure.aop;
 
 import com.guarino.gatherlyapi.infrastructure.web.validation.NormalizeEmail;
 import com.guarino.gatherlyapi.infrastructure.web.validation.TrimString;
+
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
@@ -38,7 +41,6 @@ public class InputNormalizationAspect {
                 try {
                     field.setAccessible(true);
                     String originalValue = (String) field.get(obj);
-
                     if (originalValue != null) {
                         String processedValue = originalValue;
 
@@ -49,7 +51,6 @@ public class InputNormalizationAspect {
                         if (field.isAnnotationPresent(NormalizeEmail.class)) {
                             processedValue = processedValue.toLowerCase();
                         }
-
                         field.set(obj, processedValue);
                     }
                 } catch (IllegalAccessException e) {

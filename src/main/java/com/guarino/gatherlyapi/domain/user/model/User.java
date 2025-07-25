@@ -1,8 +1,11 @@
-package com.guarino.gatherlyapi.domain.model.user;
+package com.guarino.gatherlyapi.domain.user.model;
+
+import lombok.Getter;
 
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
+@Getter
 public class User {
 
     private final UUID id;
@@ -14,7 +17,14 @@ public class User {
     private final ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;
 
-    private User(UUID id, String name, String email, String passwordHash, UserRole role, UserStatus status, ZonedDateTime createdAt, ZonedDateTime updatedAt) {
+    private User(UUID id,
+                 String name,
+                 String email,
+                 String passwordHash,
+                 UserRole role,
+                 UserStatus status,
+                 ZonedDateTime createdAt,
+                 ZonedDateTime updatedAt) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -25,7 +35,9 @@ public class User {
         this.updatedAt = updatedAt;
     }
 
-    public static User create(String name, String email, String passwordHash) {
+    public static User create(String name,
+                              String email,
+                              String passwordHash) {
         var now = ZonedDateTime.now();
         return new User(
                 UUID.randomUUID(),
@@ -39,8 +51,25 @@ public class User {
         );
     }
 
-    public static User reconstitute(UUID id, String name, String email, String passwordHash, UserRole role, UserStatus status, ZonedDateTime createdAt, ZonedDateTime updatedAt) {
-        return new User(id, name, email, passwordHash, role, status, createdAt, updatedAt);
+    public static User reconstitute(
+            UUID id,
+            String name,
+            String email,
+            String passwordHash,
+            UserRole role,
+            UserStatus status,
+            ZonedDateTime createdAt,
+            ZonedDateTime updatedAt) {
+        return new User(
+                id,
+                name,
+                email,
+                passwordHash,
+                role,
+                status,
+                createdAt,
+                updatedAt
+        );
     }
 
     public void updateProfile(String newName) {
@@ -79,37 +108,5 @@ public class User {
 
     private void touch() {
         this.updatedAt = ZonedDateTime.now();
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPasswordHash() {
-        return passwordHash;
-    }
-
-    public UserRole getRole() {
-        return role;
-    }
-
-    public UserStatus getStatus() {
-        return status;
-    }
-
-    public ZonedDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public ZonedDateTime getUpdatedAt() {
-        return updatedAt;
     }
 }

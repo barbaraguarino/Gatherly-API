@@ -1,4 +1,4 @@
-package com.guarino.gatherlyapi.application.port.in.user;
+package com.guarino.gatherlyapi.application.user.port.in;
 
 public record RegisterUserCommand(
         String name,

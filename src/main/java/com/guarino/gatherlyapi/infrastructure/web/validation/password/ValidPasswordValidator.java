@@ -13,14 +13,12 @@ public class ValidPasswordValidator implements ConstraintValidator<ValidPassword
     private static final Pattern PATTERN = Pattern.compile(PASSWORD_PATTERN);
 
     @Override
-    public void initialize(ValidPassword constraintAnnotation) {
-    }
+    public void initialize(ValidPassword constraintAnnotation){}
 
     @Override
     public boolean isValid(String password, ConstraintValidatorContext context) {
-        if (password == null || password.isBlank()) {
+        if (password == null || password.isBlank())
             return true;
-        }
         return PATTERN.matcher(password).matches();
     }
 }

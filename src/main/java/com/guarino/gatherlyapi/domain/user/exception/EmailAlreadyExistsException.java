@@ -1,5 +1,8 @@
-package com.guarino.gatherlyapi.domain.exception;
+package com.guarino.gatherlyapi.domain.user.exception;
 
+import lombok.Getter;
+
+@Getter
 public class EmailAlreadyExistsException extends RuntimeException {
 
     private final String email;
@@ -7,9 +10,5 @@ public class EmailAlreadyExistsException extends RuntimeException {
     public EmailAlreadyExistsException(String email) {
         super();
         this.email = email;
-    }
-
-    public String getEmail() {
-        return email;
     }
 }

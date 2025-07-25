@@ -1,7 +1,8 @@
-package com.guarino.gatherlyapi.infrastructure.persistence.mapper;
+package com.guarino.gatherlyapi.infrastructure.persistence.user.mapper;
 
-import com.guarino.gatherlyapi.domain.model.user.User;
-import com.guarino.gatherlyapi.infrastructure.persistence.entity.UserEntity;
+import com.guarino.gatherlyapi.domain.user.model.User;
+import com.guarino.gatherlyapi.infrastructure.persistence.user.entity.UserEntity;
+
 import org.springframework.stereotype.Component;
 
 @Component

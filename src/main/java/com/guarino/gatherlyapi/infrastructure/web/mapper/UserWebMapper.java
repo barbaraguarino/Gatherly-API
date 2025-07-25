@@ -1,11 +1,13 @@
 package com.guarino.gatherlyapi.infrastructure.web.mapper;
 
-import com.guarino.gatherlyapi.application.port.in.user.RegisterUserCommand;
-import com.guarino.gatherlyapi.domain.model.user.User;
+import com.guarino.gatherlyapi.application.user.port.in.RegisterUserCommand;
+import com.guarino.gatherlyapi.domain.user.model.User;
 import com.guarino.gatherlyapi.infrastructure.translator.EnumTranslator;
 import com.guarino.gatherlyapi.infrastructure.web.dto.request.RegisterUserRequestDTO;
 import com.guarino.gatherlyapi.infrastructure.web.dto.response.UserSimpleResponseDTO;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Component;
 
 @Component

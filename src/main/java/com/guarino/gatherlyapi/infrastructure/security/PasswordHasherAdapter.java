@@ -1,7 +1,9 @@
 package com.guarino.gatherlyapi.infrastructure.security;
 
-import com.guarino.gatherlyapi.application.port.out.PasswordHasherPort;
+import com.guarino.gatherlyapi.application.user.port.out.PasswordHasherPort;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 

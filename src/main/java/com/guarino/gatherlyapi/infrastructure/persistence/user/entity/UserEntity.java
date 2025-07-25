@@ -1,8 +1,10 @@
-package com.guarino.gatherlyapi.infrastructure.persistence.entity;
+package com.guarino.gatherlyapi.infrastructure.persistence.user.entity;
 
-import com.guarino.gatherlyapi.domain.model.user.UserRole;
-import com.guarino.gatherlyapi.domain.model.user.UserStatus;
+import com.guarino.gatherlyapi.domain.user.model.UserRole;
+import com.guarino.gatherlyapi.domain.user.model.UserStatus;
+
 import jakarta.persistence.*;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

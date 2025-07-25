@@ -1,8 +1,11 @@
 package com.guarino.gatherlyapi.infrastructure.web.exception;
 
-import com.guarino.gatherlyapi.domain.exception.EmailAlreadyExistsException;
+import com.guarino.gatherlyapi.domain.user.exception.EmailAlreadyExistsException;
 import com.guarino.gatherlyapi.infrastructure.web.dto.response.ErrorResponseDTO;
+
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +17,11 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 
 import java.time.ZonedDateTime;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
+@Slf4j
 @RestControllerAdvice
 @RequiredArgsConstructor
 public class GlobalExceptionHandler {
@@ -24,55 +29,46 @@ public class GlobalExceptionHandler {
     private final MessageSource messageSource;
 
     @ExceptionHandler(EmailAlreadyExistsException.class)
-    public ResponseEntity<ErrorResponseDTO> handleEmailAlreadyExists(EmailAlreadyExistsException ex, WebRequest request) {
-        String path = ((ServletWebRequest)request).getRequest().getRequestURI();
-        String message = messageSource.getMessage(
-                "error.email.exists",
-                new Object[]{ex.getEmail()},
-                request.getLocale()
-        );
-        ErrorResponseDTO errorDto = new ErrorResponseDTO(
-                ZonedDateTime.now(),
-                HttpStatus.CONFLICT.value(),
-                HttpStatus.CONFLICT.getReasonPhrase(),
-                message,
-                path,
-                null
-        );
-        return new ResponseEntity<>(errorDto, HttpStatus.CONFLICT);
+    public ResponseEntity<ErrorResponseDTO> handleEmailAlreadyExists(final EmailAlreadyExistsException ex, final WebRequest request) {
+        String message = resolveMessage("error.email.exists", new Object[]{ex.getEmail()}, request);
+        return buildErrorResponse(HttpStatus.CONFLICT, message, null, request);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponseDTO> handleValidationExceptions(MethodArgumentNotValidException ex, WebRequest request) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        String path = ((ServletWebRequest)request).getRequest().getRequestURI();
-        String message = messageSource.getMessage("error.validation", null, request.getLocale());
-        ErrorResponseDTO errorDto = new ErrorResponseDTO(
-                ZonedDateTime.now(),
-                HttpStatus.BAD_REQUEST.value(),
-                HttpStatus.BAD_REQUEST.getReasonPhrase(),
-                message,
-                path,
-                errors
-        );
-        return new ResponseEntity<>(errorDto, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ErrorResponseDTO> handleValidationExceptions(final MethodArgumentNotValidException ex, final WebRequest request) {
+        Map<String, String> validationErrors = ex.getBindingResult().getFieldErrors().stream()
+                .filter(error -> Objects.nonNull(error.getDefaultMessage()))
+                .collect(Collectors.toMap(
+                        FieldError::getField,
+                        FieldError::getDefaultMessage,
+                        (existingValue, newValue) -> newValue
+                ));
+
+        String message = resolveMessage("error.validation", null, request);
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, message, validationErrors, request);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponseDTO> handleGlobalException(Exception ex, WebRequest request) {
+    public ResponseEntity<ErrorResponseDTO> handleGlobalException(final Exception ex, final WebRequest request) {
+        log.error("Unhandled exception caught: {}", ex.getMessage(), ex);
+        String message = resolveMessage("error.unexpected", null, request);
+        return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, message, null, request);
+    }
+
+    private ResponseEntity<ErrorResponseDTO> buildErrorResponse(final HttpStatus status, final String message, final Map<String, String> details, final WebRequest request) {
+        String path = ((ServletWebRequest) request).getRequest().getRequestURI();
         ErrorResponseDTO errorDto = new ErrorResponseDTO(
                 ZonedDateTime.now(),
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
-                "An unexpected error occurred. Please try again later.",
-                request.getDescription(false).replace("uri=", ""),
-                null
+                status.value(),
+                status.getReasonPhrase(),
+                message,
+                path,
+                details
         );
-        return new ResponseEntity<>(errorDto, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(errorDto, status);
+    }
+
+    private String resolveMessage(final String key, final Object[] args, final WebRequest request) {
+        return messageSource.getMessage(key, args, request.getLocale());
     }
 }

@@ -1,6 +1,6 @@
-package com.guarino.gatherlyapi.infrastructure.persistence.repository;
+package com.guarino.gatherlyapi.infrastructure.persistence.user.repository;
 
-import com.guarino.gatherlyapi.infrastructure.persistence.entity.UserEntity;
+import com.guarino.gatherlyapi.infrastructure.persistence.user.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

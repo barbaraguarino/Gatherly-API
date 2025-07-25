@@ -1,6 +1,6 @@
-package com.guarino.gatherlyapi.application.port.out;
+package com.guarino.gatherlyapi.application.user.port.out;
 
-import com.guarino.gatherlyapi.domain.model.user.User;
+import com.guarino.gatherlyapi.domain.user.model.User;
 
 import java.util.Optional;
 import java.util.UUID;

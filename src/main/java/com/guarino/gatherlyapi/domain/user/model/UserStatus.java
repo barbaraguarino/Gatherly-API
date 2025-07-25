@@ -1,4 +1,4 @@
-package com.guarino.gatherlyapi.domain.model.user;
+package com.guarino.gatherlyapi.domain.user.model;
 
 public enum UserStatus {
     PENDING_VERIFICATION,

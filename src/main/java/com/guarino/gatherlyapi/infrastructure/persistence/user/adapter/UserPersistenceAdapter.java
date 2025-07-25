@@ -1,11 +1,13 @@
-package com.guarino.gatherlyapi.infrastructure.persistence.adapter;
+package com.guarino.gatherlyapi.infrastructure.persistence.user.adapter;
 
-import com.guarino.gatherlyapi.application.port.out.UserRepositoryPort;
-import com.guarino.gatherlyapi.domain.model.user.User;
-import com.guarino.gatherlyapi.infrastructure.persistence.entity.UserEntity;
-import com.guarino.gatherlyapi.infrastructure.persistence.mapper.UserMapper;
-import com.guarino.gatherlyapi.infrastructure.persistence.repository.UserJpaRepository;
+import com.guarino.gatherlyapi.application.user.port.out.UserRepositoryPort;
+import com.guarino.gatherlyapi.domain.user.model.User;
+import com.guarino.gatherlyapi.infrastructure.persistence.user.entity.UserEntity;
+import com.guarino.gatherlyapi.infrastructure.persistence.user.mapper.UserMapper;
+import com.guarino.gatherlyapi.infrastructure.persistence.user.repository.UserJpaRepository;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
