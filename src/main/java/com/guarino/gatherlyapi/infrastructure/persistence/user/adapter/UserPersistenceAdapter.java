@@ -3,7 +3,7 @@ package com.guarino.gatherlyapi.infrastructure.persistence.user.adapter;
 import com.guarino.gatherlyapi.application.user.port.out.UserRepositoryPort;
 import com.guarino.gatherlyapi.domain.user.model.User;
 import com.guarino.gatherlyapi.infrastructure.persistence.user.entity.UserEntity;
-import com.guarino.gatherlyapi.infrastructure.persistence.user.mapper.UserMapper;
+import com.guarino.gatherlyapi.infrastructure.persistence.user.mapper.UserPersistenceMapper;
 import com.guarino.gatherlyapi.infrastructure.persistence.user.repository.UserJpaRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -18,25 +18,25 @@ import java.util.UUID;
 public class UserPersistenceAdapter implements UserRepositoryPort {
 
     private final UserJpaRepository jpaRepository;
-    private final UserMapper userMapper;
+    private final UserPersistenceMapper userPersistenceMapper;
 
     @Override
     public User save(User user) {
-        UserEntity userEntity = userMapper.toEntity(user);
+        UserEntity userEntity = userPersistenceMapper.toEntity(user);
         UserEntity savedEntity = jpaRepository.save(userEntity);
-        return userMapper.toDomain(savedEntity);
+        return userPersistenceMapper.toDomain(savedEntity);
     }
 
     @Override
     public Optional<User> findById(UUID id) {
         return jpaRepository.findById(id)
-                .map(userMapper::toDomain);
+                .map(userPersistenceMapper::toDomain);
     }
 
     @Override
     public Optional<User> findByEmail(String email) {
         return jpaRepository.findByEmail(email)
-                .map(userMapper::toDomain);
+                .map(userPersistenceMapper::toDomain);
     }
 
     @Override

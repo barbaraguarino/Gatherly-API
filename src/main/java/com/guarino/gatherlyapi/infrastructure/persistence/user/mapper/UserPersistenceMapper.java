@@ -6,7 +6,7 @@ import com.guarino.gatherlyapi.infrastructure.persistence.user.entity.UserEntity
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserMapper {
+public class UserPersistenceMapper {
 
     public User toDomain(UserEntity entity) {
         if (entity == null) {
